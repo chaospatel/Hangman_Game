@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flask Hangman</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #222;
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 48px auto;
+            padding: 32px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .word {
+            margin: 24px 0;
+            font-size: 2rem;
+            letter-spacing: 0.35rem;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status,
+        .guesses,
+        .result {
+            margin: 12px 0;
+            text-align: center;
+        }
+
+        .message {
+            margin: 20px 0;
+            padding: 12px 14px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .message.success {
+            background: #e8f7ec;
+            color: #1f6b35;
+        }
+
+        .message.error {
+            background: #fdecec;
+            color: #9a2525;
+        }
+
+        .message.info {
+            background: #eef3fb;
+            color: #244d85;
+        }
+
+        form {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"] {
+            width: 72px;
+            padding: 10px;
+            font-size: 1rem;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 18px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #2f6fed;
+            color: #ffffff;
+        }
+
+        button:hover {
+            background: #2458bc;
+        }
+
+        .secondary {
+            background: #555555;
+        }
+
+        .secondary:hover {
+            background: #3f3f3f;
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <h1>Hangman</h1>
+
+        <div class="word">{{ display_word }}</div>
+
+        <p class="status">Attempts remaining: <strong>{{ remaining_attempts }}</strong> / {{ max_attempts }}</p>
+        <p class="guesses">Guessed letters: <strong>{{ guessed_letters }}</strong></p>
+
+        {% if message %}
+            <div class="message {{ message_type }}">{{ message }}</div>
+        {% endif %}
+
+        {% if won %}
+            <p class="result"><strong>You Win!</strong> You guessed the word.</p>
+        {% elif lost %}
+            <p class="result"><strong>Game Over.</strong> The correct word was <strong>{{ word }}</strong>.</p>
+        {% else %}
+            <form method="post" action="{{ url_for('index') }}">
+                <label for="guess">Enter a letter:</label>
+                <input
+                    id="guess"
+                    name="guess"
+                    type="text"
+                    maxlength="1"
+                    pattern="[A-Za-z]"
+                    autocomplete="off"
+                    required
+                >
+                <button type="submit">Guess</button>
+            </form>
+        {% endif %}
+
+        <form method="post" action="{{ url_for('restart') }}">
+            <button type="submit" class="secondary">Restart Game</button>
+        </form>
+    </main>
+</body>
+</html>
